@@ -1,0 +1,31 @@
+pipeline{
+    agent any
+    stages{
+        stage('pull stage'){
+            steps{
+                git branch: 'devops', url: 'https://github.com/abhilashmwaghmare/EASY_CRUD.git'
+                
+            }
+        }
+         stage('build stage'){
+            steps{
+                sh '''cd backend
+                        mvn clean package -DskipTests
+                        '''
+            }
+        }
+        stage ('stage-3-test') {
+                steps {
+                     withSonarQubeEnv('sonar-cred') {
+    sh '''
+    cd backend
+    mvn clean verify sonar:sonar -DskipTests\\
+  -Dsonar.projectKey=student-app 
+  '''
+}
+                }
+                                                    
+            }
+        }
+    }
+}
